@@ -1,5 +1,6 @@
-package com.esand.GerenciamentoRh;
+package com.esand.GerenciamentoRh.config;
 
+import com.esand.GerenciamentoRh.GerenciamentoRhApplication;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
