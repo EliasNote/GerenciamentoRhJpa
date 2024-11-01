@@ -1,18 +1,23 @@
 package com.esand.GerenciamentoRh;
 
-import com.esand.GerenciamentoRh.entidades.Funcionario;
-import com.esand.GerenciamentoRh.repositorios.FuncionarioRepository;
+import com.esand.GerenciamentoRh.repositorios.LoginRepository;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import static com.esand.GerenciamentoRh.Utils.loadFXML;
+import static com.esand.GerenciamentoRh.Utils.showErrorMessage;
+
 @Component
-public class LoginController {
+public class LoginController  {
 
     @Autowired
-    private FuncionarioRepository funcionarioRepository;
+    private LoginRepository loginRepository;
+
+    @Autowired
+    private Inicializar inicializar;
 
     @FXML
     private TextField CPF;
@@ -22,23 +27,22 @@ public class LoginController {
 
     @FXML
     public void logar() {
-        Funcionario funcionario = new Funcionario();
-        funcionario.setNome("Elias");
-        funcionario.setSobrenome("Sand");
-        funcionario.setCpf("10527127973");
-        funcionario.setSalario(8000.00);
-        funcionario.setDepartamento(Funcionario.Departamento.RH);
-        funcionario.setBeneficios(null);
+        inicializar.criarLoginFuncionarioAdmin();
 
-        System.out.println(funcionarioRepository.save(funcionario));
+        if (verificarSenha()) {
+            Stage stage = (Stage) CPF.getScene().getWindow();
+            loadFXML(stage, "principal.fxml", CPF);
+        } else {
+            showErrorMessage("CPF ou Senha incorreto");
+        }
     }
 
-    private void showErrorMessage(String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("ERRO");
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
+    private boolean verificarSenha() {
+        if (loginRepository.findByCpf(CPF.getText()).getSenha().equals(Senha.getText())) {
+            System.out.println(loginRepository.findByCpf(CPF.getText()).getCpf() + "\n" +
+                    loginRepository.findByCpf(CPF.getText()).getSenha());
+            return true;
+        };
+        return false;
     }
-
 }

@@ -14,6 +14,7 @@ public class Funcionario {
 
     private String nome;
     private String sobrenome;
+    @Column(unique = true)
     private String cpf;
     private Departamento departamento;
     private Double salario;
